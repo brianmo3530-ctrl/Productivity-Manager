@@ -27,9 +27,15 @@ struct TaskManager
     std::string name;
     int priority;
 };
+struct NoteManager
+{
+    std::string title;
+    std::string content;
+};
 
 //Global variables
 std::vector<TaskManager> taskList;
+std::vector<NoteManager> noteList;
 
 //UI arrays and pointers
 User_Interface Tasks[] = 
@@ -181,42 +187,8 @@ void displayTasks()
         }
         else if (taskInput == "Create Tasks" || taskInput == "create tasks" || taskInput == "CREATE TASKS" || taskInput == "Create tasks" || taskInput == "create Tasks")
         {
-            TaskManager TaskInput;
-            std::cout << "How many tasks do you want to add?: ";
-                int x;
-                std::cin >> x;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream
-                for( int i = 0; i < x; i++)
-                {
-                    std::cout << "Please enter the task name (Or 'quit' to stop adding tasks): "; 
-                    std::getline(std::cin, TaskInput.name);
-
-                    if (TaskInput.name == "quit")
-                    {
-                        std::cout<< "Exiting Task Creation." << std::endl;
-                        break;
-                    
-                    }
-                    else
-                    {
-                    std::cout << "Please enter the task priority (1-100): ";
-                    std::cin >> TaskInput.priority;
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream 
-                    while (TaskInput.priority < 1 || TaskInput.priority > 100)
-                    {
-                    std::cout << "Invalid priority. Please enter a number between 1 and 100." << std::endl;
-                    std::cin >> TaskInput.priority;
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream 
-                    continue;
-                    }
-
-                    std::cout << "Task added: " << TaskInput.name << " Priority: " << TaskInput.priority << std::endl;
-                    taskList.push_back(TaskInput);
-                    }
-                }
-            }
-
-
+           createTasks();
+        }
         else if(taskInput == "Exit Tasks" || taskInput == "exit tasks" || taskInput == "EXIT TASKS" || taskInput == "Exit tasks" || taskInput == "exit Tasks")
         {
             std::cout << "You have exited the Tasks UI. Returning to main menu..." << std::endl;
@@ -238,8 +210,97 @@ void displayMenu()
 
 
 void displayNotes() 
-{
+{while(true)
+    {
+        std::string NoteInput;
+        std::cout<< "You have selected Notes. Do you wish to make new notes or view existing ones?(View Notes/ Create Notes/ Exit Notes) " << std::endl;
+        getline(std::cin, NoteInput);
+        if (NoteInput == "View Notes" || NoteInput == "view notes" || NoteInput == "VIEW NOTES"|| NoteInput == "View notes" || NoteInput == "view Notes")
+        {
+            while(true)
+            {
+                while(noteList.empty())
+                {
+                    std::cout << "No notes in the list. Do you want to add a note?: " << std::endl;
+                    std::string Notenput;
+                    getline(std::cin, NoteInput);
 
+                        if (NoteInput == "No" || NoteInput == "no"|| NoteInput == "Nah" || NoteInput == "nah" || NoteInput == "Nope" || NoteInput == "nope"|| NoteInput == "Negative" || NoteInput == "negative")
+                        {
+                            std::cout << "No note added. Returning to Notes menu..." << std::endl; //If user chooses not to add a note, the program will return to the Notes menu.
+                            return;
+                        }
+                        else if (NoteInput == "Yes" || NoteInput == "yes" || NoteInput == "Yup" || NoteInput == "yup" || NoteInput == "Sure" || NoteInput == "sure" || NoteInput == "Yeah" || NoteInput == "yeah")
+                        {
+                            createNotes();
+                        }
+                        else
+                        {
+                            std::cout << "Invalid input. Please enter a definitive answer (Yes/No)." << std::endl;
+                            continue;
+                        }
+                }
+                std::cout << "Here are your notes: " << std::endl;
+                for (const auto& note : noteList)
+                {
+                    std::cout << "Title: " << note.title << " Content: " << note.content << std::endl;
+                }
+                break;
+            }
+        }
+        else if (NoteInput == "Create Notes" || NoteInput == "create notes" || NoteInput == "CREATE NOTES" || NoteInput == "Create notes" || NoteInput == "create Notes")
+        {
+            NoteManager NoteInput;
+            std::cout << "How many notes do you want to add?: ";
+                int y;
+                std::cin >> y;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream
+                for( int i = 0; i < y; i++)
+                {
+                    std::cout << "Please enter the note title (Or 'exit' to stop adding notes): "; 
+                    std::getline(std::cin, NoteInput.title);
+
+                    if (NoteInput.title == "exit" || NoteInput.title == "Exit" || NoteInput.title == "EXIT")
+                    {
+                        std::cout<< "Exiting Note Creation." << std::endl;
+                        break;
+                    
+                    }
+                    else
+                    {
+                    std::cout << "Please enter the note's content: ";
+                    std::getline(std::cin, NoteInput.content);
+                    noteList.push_back(NoteInput);
+                    }
+                }
+                    if (NoteInput.title == "exit" || NoteInput.content == "Exit" || NoteInput.title == "Exit" || NoteInput.content == "exit")
+                    {
+                        std::cout<< "Exiting Note Creation." << std::endl;
+                        break;
+                    
+                    }
+                    else
+                    {
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream 
+                    
+                    std::cout << "Note added: " << NoteInput.title << " Content: " << NoteInput.content << std::endl;
+                    noteList.push_back(NoteInput);
+                    }
+            }
+
+        
+        else if(NoteInput == "Exit Notes" || NoteInput == "exit notes" || NoteInput == "EXIT NOTES" || NoteInput == "Exit notes" || NoteInput == "exit Notes")
+        {
+            std::cout << "You have exited the Notes UI. Returning to main menu..." << std::endl;
+            Current_UI = UI[0];
+            current_Size = UI_Size[0];
+            current_UI_index = 0;   
+        }
+        else
+        {
+            std::cout << "Invalid input. Please enter 'View Notes', 'Create Notes', or 'Exit Notes'." << std::endl;
+        }
+    }
 }
 
 void displayDiagram() 
@@ -253,7 +314,39 @@ void displayTracker()
 }
 void createTasks() 
 {
+    TaskManager TaskCreate;
+    std::cout << "How many tasks do you want to add?: ";
+    int x;
+    std::cin >> x;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream
+    for( int i = 0; i < x; i++)
+    {
+        std::cout << "Please enter the task name (Or 'exit' to stop adding tasks): "; 
+        std::getline(std::cin, TaskCreate.name);
 
+        if (TaskCreate.name == "exit" || TaskCreate.name == "Exit" || TaskCreate.name == "EXIT")
+        {
+            std::cout<< "Exiting Task Creation." << std::endl;
+            break;
+                    
+        }
+        else
+        {
+        std::cout << "Please enter the task priority (1-100): ";
+        std::cin >> TaskCreate.priority;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream 
+        while (TaskCreate.priority < 1 || TaskCreate.priority > 100)
+        {
+        std::cout << "Invalid priority. Please enter a number between 1 and 100." << std::endl;
+        std::cin >> TaskCreate.priority;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character left in the stream 
+        continue;
+        }
+
+        std::cout << "Task added: " << TaskCreate.name << " Priority: " << TaskCreate.priority << std::endl;
+        taskList.push_back(TaskCreate);
+        }
+    }
 }
 
 void createNotes() 
